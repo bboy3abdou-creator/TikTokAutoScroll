@@ -14,11 +14,23 @@ jobs:
       - name: Unzip project
         run: unzip TikTokAutoScroll.zip
 
-      - name: Make gradlew executable
-        run: chmod +x TikTokAutoScroll/gradlew
+      - name: Generate gradlew
+        run: |
+          cd TikTokAutoScroll
+          gradle wrapper --gradle-version 8.2
+        env:
+          GRADLE_VERSION: '8.2'
+
+      - name: Install Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.2'
 
       - name: Build APK
-        run: cd TikTokAutoScroll && ./gradlew assembleDebug
+        run: |
+          cd TikTokAutoScroll
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
