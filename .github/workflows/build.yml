@@ -11,24 +11,22 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - uses: gradle/actions/setup-gradle@v3
+        with:
+          gradle-version: '8.2'
+
       - name: Unzip project
         run: unzip TikTokAutoScroll.zip
 
-      - name: Generate gradlew
+      - name: Add gradle.properties
         run: |
-          cd TikTokAutoScroll
-          gradle wrapper --gradle-version 8.2
-        env:
-          GRADLE_VERSION: '8.2'
-
-      - name: Install Gradle
-        uses: gradle/actions/setup-gradle@v3
-        with:
-          gradle-version: '8.2'
+          echo "android.useAndroidX=true" >> TikTokAutoScroll/gradle.properties
+          echo "android.enableJetifier=true" >> TikTokAutoScroll/gradle.properties
 
       - name: Build APK
         run: |
           cd TikTokAutoScroll
+          gradle wrapper --gradle-version 8.2
           chmod +x gradlew
           ./gradlew assembleDebug
 
@@ -36,4 +34,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: TikTokAutoScroll
-          path: TikTokAutoScroll/app/build/outputs/apk/debug/app-debug.apk
+          path: "**/app-debug.apk"
