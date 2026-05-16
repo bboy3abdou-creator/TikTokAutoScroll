@@ -1,0 +1,27 @@
+name: Build APK
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Unzip project
+        run: unzip TikTokAutoScroll.zip
+
+      - name: Make gradlew executable
+        run: chmod +x TikTokAutoScroll/gradlew
+
+      - name: Build APK
+        run: cd TikTokAutoScroll && ./gradlew assembleDebug
+
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: TikTokAutoScroll
+          path: TikTokAutoScroll/app/build/outputs/apk/debug/app-debug.apk
